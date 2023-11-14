@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 from uuid import uuid4
 
@@ -28,9 +29,10 @@ class Download(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     count = models.IntegerField(default=0)
     limit = models.IntegerField(default=2)
+    name = models.CharField(max_length=100, blank=False)
 
     def __str__(self):
-        return self.book.title
+        return f'{self.name} - {self.book.title}'
     
     class Meta:
         db_table = 'download'

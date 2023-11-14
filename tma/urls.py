@@ -18,6 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view as swagger_get_schema_view
+from django.conf.urls.static import static
+from django.conf import settings
+from tma.settings import BASE_DIR
 
 schema_view = swagger_get_schema_view(
     openapi.Info(

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TMA</title>
+  <link rel="stylesheet" href="/static/index.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(() => {
+      // Add your code here
+      url = window.location.origin;
+
+      request = $.ajax({
+        url: `${url}/api/books`,
+        type: "GET",
+        dataType: "json",
+      });
+
+        request.done((data) => {
+            if (data.length === 0) {
+                $("#books").append(
+                    `<div class="book">
+                        <h2>No books available</h2>
+                    </div>`
+                );
+            }  
+
+            for (let i = 0; i < data.length; i++) {
+                $("#books").append(
+                    `<div class="book">
+                        <img src="/static/default_book.jpg" alt="Book 1">
+                        <h2>${data[i].title}</h2>
+                        <p><b>Author:</b> ${data[i].author}</p>
+                        <p><b>Description:</b> ${data[i].description}</p>
+                        <p><b>Price:</b> ₦${data[i].price}</p>
+                    </div>`
+                );
+            }
+        });
+
+
+        $('#download').submit((event) => {
+            event.preventDefault();
+            const code = $('#download-code').val();
+            window.location.href = `${url}/api/download/${code}`;
+        });
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <img src="/static/tma.jpg" alt="logo_image">
+    <h1>Teniola's Medical Academy</h1>
+    <p>The Best Guide for medicine students</p>
+  </header>
+  <main>
+    <div class="books">
+      <h2>About Us</h2>
+    <ul>
+        <li>
+            We tutor medical students from freshers to seniors on several medical courses. Take practicals... Video tutorials... and community discussions and support.
+        </li><br>
+        <li>
+            Provide study materials and books for students to download and read, Medical tools, practicals apparatus and more.
+        </li><br>
+        <li>
+            Assistance and mentorship on projects and assignments, explanations and breakdown of complex concepts. 
+        </li><br>
+    </ul>
+      <img src="/static/about.jpg" alt="About Us Image" style="width: 100%;">
+    </div>
+    <div class="book">
+        <h1>Digital Books AVailable For Sale</h1>
+    </div>
+    <div id="books">
+        
+    </div>
+    <!-- Add more books here -->
+    <form id="download">
+    <label for="download-code">Enter download code:</label>
+    <input type="text" id="download-code" name="download-code">
+    <button type="submit">Submit</button>
+    </form>
+  </main>
+</body>
+</html>
