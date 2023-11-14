@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -180,3 +181,5 @@ def download(request, link):
 
     return response
 
+def welcome(request):
+    return JsonResponse({'message': 'Welcome to TMA API'})
