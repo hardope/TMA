@@ -1,0 +1,94 @@
+<!-- FILEPATH: /c:/Users/HP/projects/tma/templates/login.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f2f2f2;
+		}
+
+		.container {
+			background-color: #fff;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+			margin: 0 auto;
+			max-width: 500px;
+			padding: 20px;
+			text-align: center;
+		}
+
+		input[type=text], input[type=password] {
+			padding: 10px;
+			margin: 5px 0 15px 0;
+			display: block;
+			border: none;
+			border-radius: 5px;
+			background-color: #c9c9c9;
+			width: 95%;
+		}
+
+		input[type=submit] {
+			background-color: #4CAF50;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			padding: 10px;
+			margin-top: 10px;
+			cursor: pointer;
+			width: 100%;
+		}
+
+		input[type=submit]:hover {
+			background-color: #45a049;
+		}
+
+		.error {
+			color: red;
+			font-size: 12px;
+			margin-top: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Login</h1>
+		<form id="login-form">
+            <div id="error-message" class="error"></div>
+			<input type="text" placeholder="Enter Username" name="username" required>
+
+			<input type="password" placeholder="Enter Password" name="password" required>
+
+			<input type="submit" value="Login">
+		</form>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#login-form').submit(function(event) {
+				event.preventDefault();
+				var username = $('input[name="username"]').val();
+				var password = $('input[name="password"]').val();
+				$.ajax({
+					url: `${window.location.origin}/api/auth/`,
+					type: 'POST',
+					data: {
+						username: username,
+						password: password
+					},
+					success: function(response) {
+                        window.location.href = window.location.origin;
+					},
+					error: function(xhr, status, error) {
+						$('#error-message').html(xhr.responseJSON.message);
+					}
+				});
+			});
+		});
+	</script>
+</body>
+</html>

@@ -9,10 +9,45 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 
+
+class Auth(APIView):
+    authentication_classes = []
+
+    @swagger_auto_schema(
+        operation_description="Create a Book",
+        responses={
+            200: 'OK',
+        }
+    )
+
+    def post(self, request):
+
+        try:
+            username = request.data['username']
+            password = request.data['password']
+        except:
+            return Response(
+                {'message': 'Invalid Data'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return Response(status=status.HTTP_200_OK)
+        return Response(
+            {'message': 'Invalid Credentials'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
 class BooksView(APIView):
+
+    authentication_classes = []
 
     @swagger_auto_schema(
         operation_description="Get All Books",
@@ -35,10 +70,8 @@ class BooksView(APIView):
     def post(self, request):
 
         if not request.user.is_authenticated:
-            return Response(
-                {'message': 'You are not authenticated'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+
+            return Response({'message': 'You are not authorized to perform this action.'})
 
         serializer = BooksSerializer(data=request.data)
         if serializer.is_valid():

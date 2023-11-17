@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Create New TextBook</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .container {
+        margin-top: 50px;
+      }
+      .form-group {
+        margin-bottom: 25px;
+      }
+      .progress {
+        margin-top: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      var csrf = '{{ csrf_token }}';
+    </script>
+    <div class="container">
+      <h1>Create New TextBook</h1>
+      <form id="create-form" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="title">Title:</label>
+          <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+          <label for="author">Author:</label>
+          <input type="text" class="form-control" id="author" name="author" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" class="form-control" id="description" name="description" required>
+          </div>
+        <div class="form-group">
+          <label for="price">Price:</label>
+          <input type="number" class="form-control" id="price" name="price" required>
+        </div>
+        <div class="form-group">
+          <label for="pdf">PDF File:</label>
+          <input type="file" class="form-control-file" id="pdf" name="pdf" accept="application/pdf" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a href="#" id="logout" class="btn btn-danger float-right">Logout</a>
+      </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('#create-form').submit(function(event) {
+           event.preventDefault();
+
+           formdata = new FormData();
+            formdata.append('title', $('#title').val());
+            formdata.append('author', $('#author').val());
+            formdata.append('description', $('#description').val());
+            formdata.append('price', $('#price').val());
+            formdata.append('file', $('#pdf')[0].files[0]);
+            formdata.append('validation', '!@#$%^&*())*&^%$#@!');
+
+            $('h1').html('Uploading...');
+
+            $.ajax({
+            url: window.location.origin + '/upload/',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRFToken": csrf
+            },
+            success: function(data) {
+                // handle successful response
+                alert("upload successful");
+                $('h1').html('Create New TextBook');
+                $('#create-form').trigger('reset');
+
+            },
+            error: function(xhr, status, error) {
+                alert("Unable To upload file, Please Check Your Internet Connection"); // handle error response
+            }
+    });
+        });
+      });
+    </script>
+  </body>
+</html>
