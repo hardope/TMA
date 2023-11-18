@@ -10,7 +10,16 @@ def login(request):
     return render(request, 'login.html')
 
 def create(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
+
     return render(request, 'create.html')
+
+def manage_download(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
+
+    return render(request, 'downloads.html')
 
 def upload(request):
 

@@ -7,4 +7,5 @@ urlpatterns = [
     path('create/', create),
     path('upload/', upload),
     path('manage/', manage),
+    path('downloads/', manage_download),
 ]
