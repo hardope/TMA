@@ -8,4 +8,5 @@ urlpatterns = [
     path('upload/', upload),
     path('manage/', manage),
     path('downloads/', manage_download),
+    path('dashboard', dashboard)
 ]

@@ -25,13 +25,6 @@ def upload(request):
 
     if request.method == 'POST':
 
-        if request.POST['validation'] != '!@#$%^&*())*&^%$#@!':
-            return {
-                'message': 'Invalid Data'
-            }
-
-        print(request.POST)
-
         title = request.POST['title']
         author = request.POST['author']
         price = request.POST['price']
@@ -56,3 +49,10 @@ def manage(request):
         return redirect('/login')
 
     return render(request, 'manage.html')
+
+def dashboard(request):
+
+    if not request.user.is_authenticated:
+        return redirect('/login')
+
+    return render(request, 'dashboard.html')

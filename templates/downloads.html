@@ -1,114 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Downloads</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            background-color: #0d0d0d;
+            color: #d4d4d4;
             margin: 0;
             padding: 20px;
-            background-color: #f7f7f7;
-            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
+
         .container {
             max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
+            width: 100%;
+            background-color: #1c1c1c;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
+
+        .container:hover {
+            transform: translateY(-5px);
+            background-color: #282828;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
         .downloads-container {
             list-style: none;
             padding: 0;
         }
+
         .download-item {
-            width: 97%;
             margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background-color: #2a2a2a;
             display: flex;
             flex-direction: column;
-            background-color: #f9f9f9;
         }
+
         .download-item span {
             margin-bottom: 5px;
         }
-        .copy-buttons {
+
+        .copy-buttons, .edit-delete-container {
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
             margin-top: 10px;
         }
-        .copy-buttons button {
-            padding: 8px 15px;
+
+        .copy-buttons button, .edit-delete-container button {
+            padding: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
         .copy-buttons button.copy-link {
             background-color: #007bff;
             color: #fff;
         }
+
         .copy-buttons button.copy-code {
             background-color: #28a745;
             color: #fff;
         }
-        .copy-buttons button:hover {
-            filter: brightness(85%);
-        }
-        .edit-delete-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .edit-delete-container button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+
         .edit-delete-container button.edit-button {
             background-color: #ffc107;
             color: #333;
         }
+
         .edit-delete-container button.delete-button {
             background-color: #dc3545;
             color: #fff;
-            margin-left: 10px;
         }
-        .edit-delete-container button:hover {
+
+        .copy-buttons button:hover, .edit-delete-container button:hover {
             filter: brightness(85%);
         }
+
         .create-download-form {
-            margin-top: 20px;
+            margin-top: 30px;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background-color: #2a2a2a;
         }
+
         .create-download-form select,
         .create-download-form input[type="number"],
         .create-download-form input[type="text"],
         .create-download-form button {
-            width: calc(100% - 42px);
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
+            width: calc(100% - 20px);
+            margin-bottom: 15px;
+            padding: 15px;
+            border: none;
             border-radius: 5px;
-            background-color: #fff;
+            background-color: #333;
+            color: #d4d4d4;
         }
+
         .create-download-form button {
             background-color: #007bff;
             color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        }
+
+        .create-download-form button:hover {
+            background-color: #0056b3;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .download-item {
+                padding: 15px;
+            }
+
+            .copy-buttons button, .edit-delete-container button {
+                padding: 8px;
+            }
+
+            .create-download-form select,
+            .create-download-form input[type="number"],
+            .create-download-form input[type="text"],
+            .create-download-form button {
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -122,130 +164,143 @@
             <input type="text" id="name" placeholder="Name for Downloader" required>
             <button type="submit">Create Download Code</button>
         </div>
-    </div>
 
+
+        <a href="/dashboard">
+            <button 
+            style="
+            margin-top: 20px; width: 100%;background-color: #0056b3; height: 35px; border: none; border-radius: 10px; padding:10px">Back to Dashboard</button>
+        </a>    
+    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var csrf = '{{ csrf_token }}';
-        var origin = window.location.origin;
 
-        // Function to load downloads and books
-        function loadDownloadsAndBooks() {
-            // Make API request to get list of download objects
-            $.get("/api/download", function(downloads) {
-                // Loop through the list of download objects and create a new HTML element for each one
-                $.each(downloads, function(index, download) {
-                    createDownloadItem(download);
-                });
-            });
+        var csrf = '{{ csrf_token }}';
+var origin = window.location.origin;
 
-            // Make API request to get list of books
-            $.get("/api/books", function(books) {
-                // Loop through the list of books and create a new HTML option for each one
-                $.each(books, function(index, book) {
-                    var bookOption = "<option value='" + book.id + "'>" + book.title + "</option>";
-                    $("#book-id").append(bookOption);
-                });
-            });
-        }
-
-        // Function to create a download item
-        function createDownloadItem(download) {
-            var downloadId = download.id;
-            var downloadCode = download.id;
-            var downloadLink = origin + "/api/download/" + downloadId;
-            var downloadItem = "<li class='download-item'>" +
-                                    "<span>Name: " + download.name + "</span>" +
-                                    "<span>Limit: " + download.limit + "</span>" +
-                                    "<span>Count: " + download.count + "</span>" +
-                                    "<div class='copy-buttons'>" +
-                                        "<button class='copy-link' onclick='copyToClipboard(\"" + downloadLink + "\")'>Copy Link</button>" +
-                                        "<button class='copy-code' onclick='copyToClipboard(\"" + downloadCode + "\")'>Copy Code</button>" +
-                                    "</div>" +
-                                    "<div class='edit-delete-container'>" +
-                                        "<button class='edit-button' data-id='" + downloadId + "'>Edit</button>" +
-                                        "<button class='delete-button' data-id='" + downloadId + "'>Delete</button>" +
-                                    "</div>" +
-                                "</li>";
-            $("#downloads-list").append(downloadItem);
-        }
-
-        // Function to copy text to clipboard
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text)
-                .then(() => {
-                    alert("Copied to clipboard: " + text);
-                })
-                .catch(err => {
-                    console.error('Error in copying text: ', err);
-                });
-        }
-
-        $(document).ready(function() {
-            loadDownloadsAndBooks();
-
-            // Handle form submission for creating a new download object
-            $(".create-download-form button").click(function() {
-                var bookId = $("#book-id").val();
-                var limit = $("#limit").val();
-                var name = $("#name").val();
-                $.ajax({
-                    url: "/api/download/",
-                    type: "POST",
-                    data: { book: bookId, limit: limit, name: name },
-                    headers: {
-                        "X-CSRFToken": csrf
-                    },
-                    success: function(download) {
-                        createDownloadItem(download);
-                    },
-                    error: function(response) {
-                        console.log(response);
-                        alert("Error creating download code");
-                    }
-                });
-            });
-
-            // Handle button click for editing a download object
-            $(document).on("click", ".edit-button", function() {
-                var downloadId = $(this).data("id");
-                var newLimit = prompt("Enter new limit:");
-                if (newLimit !== null) {
-                    $.ajax({
-                        url: "/api/download/" + downloadId,
-                        type: "PUT",
-                        data: { limit: newLimit },
-                        headers: {
-                            "X-CSRFToken": csrf
-                        },
-                        success: function(download) {
-                            var downloadItem = $("#downloads-list").find("[data-id='" + download.id + "']").closest("li");
-                            downloadItem.find("span:nth-child(2)").text("Limit: " + download.limit);
-                        }
-                    });
-                }
-            });
-
-            // Handle button click for deleting a download object
-            $(document).on("click", ".delete-button", function() {
-                var downloadId = $(this).data("id");
-                var confirmDelete = confirm("Are you sure you want to delete this download?");
-                if (confirmDelete) {
-                    $.ajax({
-                        url: "/api/download/" + downloadId + "/",
-                        type: "DELETE",
-                        data: { id: downloadId },
-                        headers: {
-                            "X-CSRFToken": csrf
-                        },
-                        success: function() {
-                            var downloadItem = $("#downloads-list").find("[data-id='" + downloadId + "']").closest("li");
-                            downloadItem.remove();
-                        }
-                    });
-                }
-            });
+// Function to load downloads and books
+function loadDownloadsAndBooks() {
+    // Make API request to get list of download objects
+    $.get("/api/download", function(downloads) {
+        // Loop through the list of download objects and create a new HTML element for each one
+        $.each(downloads, function(index, download) {
+            createDownloadItem(download);
         });
+    });
+
+    // Make API request to get list of books
+    $.get("/api/books", function(books) {
+        // Loop through the list of books and create a new HTML option for each one
+        $.each(books, function(index, book) {
+            var bookOption = "<option value='" + book.id + "'>" + book.title + "</option>";
+            $("#book-id").append(bookOption);
+        });
+    });
+}
+
+// Function to create a download item
+function createDownloadItem(download) {
+    var downloadId = download.id;
+    var downloadCode = download.id;
+    var downloadLink = origin + "/api/download/" + downloadId;
+    var downloadItem = "<li class='download-item'>" +
+                            "<span>Name: " + download.name + "</span>" +
+                            "<span>Limit: " + download.limit + "</span>" +
+                            "<span>Count: " + download.count + "</span>" +
+                            "<div class='copy-buttons'>" +
+                                "<button class='copy-link' onclick='copyToClipboard(\"" + downloadLink + "\")'>Copy Link</button>" +
+                                "<button class='copy-code' onclick='copyToClipboard(\"" + downloadCode + "\")'>Copy Code</button>" +
+                            "</div>" +
+                            "<div class='edit-delete-container'>" +
+                                "<button class='edit-button' data-id='" + downloadId + "'>Edit</button>" +
+                                "<button class='delete-button' data-id='" + downloadId + "'>Delete</button>" +
+                            "</div>" +
+                        "</li>";
+    $("#downloads-list").append(downloadItem);
+}
+
+// Function to copy text to clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            alert("Copied to clipboard: " + text);
+        })
+        .catch(err => {
+            console.error('Error in copying text: ', err);
+        });
+}
+
+$(document).ready(function() {
+    loadDownloadsAndBooks();
+
+    // Handle form submission for creating a new download object
+    $(".create-download-form button").click(function() {
+        var bookId = $("#book-id").val();
+        var limit = $("#limit").val();
+        var name = $("#name").val();
+        console.log(csrf);
+        $.ajax({
+            url: "/api/download/",
+            type: "POST",
+            data: { book: bookId, limit: limit, name: name },
+            headers: {
+                "X-CSRFToken": csrf
+            },
+            success: function(download) {
+                createDownloadItem(download);
+            },
+            error: function(response) {
+                console.log(response);
+                alert("Error creating download code");
+            }
+        });
+    });
+
+    // Handle button click for editing a download object
+    $(document).on("click", ".edit-button", function() {
+        var downloadId = $(this).data("id");
+        var newLimit = prompt("Enter new limit:");
+        if (newLimit !== null) {
+            $.ajax({
+                url: "/api/download/",
+                type: "PUT",
+                data: {
+                    "id": downloadId,
+                    "limit": newLimit
+                },
+                headers: {
+                    "X-CSRFToken": csrf
+                },
+                success: function(download) {
+                    var downloadItem = $("#downloads-list").find("[data-id='" + download.id + "']").closest("li");
+                    downloadItem.find("span:nth-child(2)").text("Limit: " + download.limit);
+                }
+            });
+        }
+    });
+
+    // Handle button click for deleting a download object
+    $(document).on("click", ".delete-button", function() {
+        var downloadId = $(this).data("id");
+        var confirmDelete = confirm("Are you sure you want to delete this download?");
+        if (confirmDelete) {
+            $.ajax({
+                url: "/api/download/",
+                type: "DELETE",
+                data: { id: downloadId },
+                headers: {
+                    "X-CSRFToken": csrf
+                },
+                success: function() {
+                    var downloadItem = $("#downloads-list").find("[data-id='" + downloadId + "']").closest("li");
+                    downloadItem.remove();
+                }
+            });
+        }
+    });
+});
+
     </script>
 </body>
 </html>

@@ -168,9 +168,12 @@ class DownloadView(APIView):
         }
     )
 
-    def put(self, request, pk):
-        download = Download.objects.get(pk=pk)
-        serializer = DownloadSerializer(download, data=request.data)
+    def put(self, request):
+        data = request.data
+        new_data = {}
+        new_data['limit'] = request.data['limit']
+        download = Download.objects.get(pk=data['id'])
+        serializer = DownloadSerializer(download, data=new_data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -186,8 +189,8 @@ class DownloadView(APIView):
         }
     )
 
-    def delete(self, request, pk):
-        download = Download.objects.get(pk=pk)
+    def delete(self, request):
+        download = Download.objects.get(pk=request.data['id'])
         download.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     

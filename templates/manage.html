@@ -1,31 +1,200 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Manage Books</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0d0d0d;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1c1c1c;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            background-color: #282828;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+
         .book-card {
             margin: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 0 5px #ccc;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            background-color: #2a2a2a;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            background-color: #343434;
+        }
+
+        .book-card h3, .book-card p {
+            color: #d4d4d4;
+        }
+
+        .btn {
+            border-radius: 25px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #a71d2a;
+        }
+
+        .modal-content {
+            background-color: #1c1c1c;
+            color: #d4d4d4;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header, .modal-footer {
+            border-bottom: 1px solid #333;
+            border-top: 1px solid #333;
+        }
+
+        .form-control {
+            background-color: #333;
+            border: none;
+            border-radius: 15px;
+            color: #d4d4d4;
+        }
+
+        .form-control:focus {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            box-shadow: none;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         var csrf = '{{ csrf_token }}';
+
+$(document).ready(function () {
+    // Get books from API
+    $.get("/api/books/", function (books) {
+        // Loop through books and create book cards
+        books.forEach(function (book) {
+            var bookCard = $("<div>").addClass("col-md-4 book-card");
+            var title = $("<h3>").text(book.title);
+            var author = $("<p>").text("Author: " + book.author);
+            var description = $("<p>").text(book.description);
+            var price = $("<p>").text("Price: ₦" + book.price);
+            var deleteBtn = $("<button>").addClass("btn btn-danger").text("Delete");
+            var editBtn = $("<button>").addClass("btn btn-primary").text("Edit");
+
+            // Add click event to delete button
+            deleteBtn.click(function () {
+                $("#deleteModal").modal("show");
+                $("#deleteBookBtn").off("click").on("click", function () {
+                    $.ajax({
+                        url: "/api/books/" + book.id + "/",
+                        type: "DELETE",
+                        headers: {
+                            "X-CSRFToken": csrf
+                        },
+                        success: function (result) {
+                            location.reload();
+                        }
+                    });
+                });
+            });
+
+            // Add click event to edit button
+            editBtn.click(function () {
+                // Populate modal fields with book details
+                $("#editBookId").val(book.id);
+                $("#editTitle").val(book.title);
+                $("#editAuthor").val(book.author);
+                $("#editDescription").val(book.description);
+                $("#editPrice").val(book.price);
+                $("#editModal").modal("show");
+            });
+
+            bookCard.append(title, author, description, price, deleteBtn, editBtn);
+            $("#books-container").append(bookCard);
+        });
+    });
+
+    // Submit edited book details
+    $("#editBookForm").submit(function (event) {
+        event.preventDefault();
+        var bookId = $("#editBookId").val();
+        var editedBook = {
+            title: $("#editTitle").val(),
+            author: $("#editAuthor").val(),
+            description: $("#editDescription").val(),
+            price: $("#editPrice").val()
+        };
+
+        $.ajax({
+            url: "/api/books/" + bookId + "/",
+            type: "PUT",
+            data: editedBook,
+            headers: {
+                "X-CSRFToken": csrf
+            },
+            success: function (result) {
+                $("#editModal").modal("hide");
+                location.reload();
+            }
+        });
+    });
+});
     </script>
-    <script src="/static/manage.js"></script>   
 </head>
 <body>
     <div class="container">
         <h1>Manage Books</h1>
         <div id="books-container" class="row"></div>
         <a href="/create/" class="btn btn-primary">Create Book</a>
+        <a href="/dashboard">
+            <button 
+            style="
+            margin-top: 20px; width: 100%;background-color: #0056b3; height: 35px; border: none; border-radius: 10px; padding:10px">Back to Dashboard</button>
+        </a>  
     </div>
 
     <!-- Modal for Delete Book -->
@@ -84,5 +253,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>
